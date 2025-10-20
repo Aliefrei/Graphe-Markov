@@ -4,6 +4,9 @@
 
 #ifndef PART1_H
 #define PART1_H
+#include <stdio.h>
+#include <stdlib.h>
+
 
 //STRUCTURES
 typedef struct s_cell {
@@ -29,7 +32,7 @@ typedef struct list_adj {
     void add_cell(t_list* list, int node, int proba);
     void display_list(t_list* L);
     list_adj* create_list_adj(int taille);
-    void display_list_adj(list_adj* L);
+    void display_list_adj(list_adj L);
 
 
 
