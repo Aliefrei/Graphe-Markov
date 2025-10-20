@@ -37,8 +37,8 @@ void display_list(t_list* L){
         printf("%d %d\n", current->node, current->proba);
     }
 }
-list_adj* create_list_adj(int taille){
-    list_adj *l_adj;
+t_list_adj* create_list_adj(int taille){
+    t_list_adj *l_adj;
     l_adj->taille = taille;
     l_adj->tab= malloc(taille*sizeof(t_list));
 
@@ -49,12 +49,15 @@ list_adj* create_list_adj(int taille){
     return l_adj;
 }
 
-void display_list_adj(list_adj L){
+void display_list_adj(t_list_adj L){
      printf("%d\n", L.taille);
      t_cell *current = L.tab->head;
      for (int i = 0; i < L.taille; i++){
 
-       printf("%d %d %d\n", i+1, current.tab[i].node, current.tab[i].proba);
+       printf("%d %d %d\n", i+1, current->node, current->proba);
+        current = current->next;
+
+
 
      }
 
