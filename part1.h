@@ -29,11 +29,12 @@ typedef struct list_adj {
 //PROTOTYPE DES FONCTIONS
     t_cell* create_cell(int node, int proba);
     t_list* create_empty_list();
-    void add_cell(t_list* list, int node, int proba);
+    void add_cell(t_list* list, int node, float proba);
     void display_list(t_list* L);
-    list_adj* create_list_adj(int taille);
-    void display_list_adj(list_adj L);
+    t_list_adj* create_list_adj(int taille);
+    void display_list_adj(t_list_adj* L);
 
+ 	t_list_adj* readGraph(const char *filename);
 
 
 
