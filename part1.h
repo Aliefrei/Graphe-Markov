@@ -52,4 +52,7 @@ t_list_adj* readGraph(const char *filename);
 // Détermine si un graphe est un graphe de Markov et écrit le résultat
 void is_markov(t_list_adj* list);
 
+// Écrit dans dessin_graph.txt les données nécessaires au dessin du graph de Markov
+void draw_graph(t_list_adj* list);
+
 #endif //PART1_H

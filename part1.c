@@ -99,5 +99,45 @@ void is_markov(t_list_adj* list) {
 }
 
 
+static char *getID(int i)
+{
+    // translate from 1,2,3, .. ,500+ to A,B,C,..,Z,AA,AB,...
+    static char buffer[10];
+    char temp[10];
+    int index = 0;
+
+    i--; // Adjust to 0-based index
+    while (i >= 0)
+    {
+        temp[index++] = 'A' + (i % 26);
+        i = (i / 26) - 1;
+    }
+
+    // Reverse the string to get the correct order
+    for (int j = 0; j < index; j++)
+    {
+        buffer[j] = temp[index - j - 1];
+    }
+    buffer[index] = '\0';
+
+    return buffer;
+}
+
+void draw_graph(t_list_adj* list) {
+    FILE *p_texte;
+    p_texte = fopen("dessin_graph.txt", "a");
+    fprintf(p_texte, "---\nconfig:\n   layout: elk\n   theme: neo\n   look: neo\n---\n\nflowchart LR\n");
+    for (int i = 0; i < list->taille; i++) {
+        fprintf(p_texte, "%s((%d))\n", getID(i+1), i+1);
+    }
+    for (int i = 0; i < list->taille; i++) {
+        t_cell *current = list->tab[i]->head;
+        while (current != NULL) {
+            fprintf(p_texte, "\n%s -->|%0.2f|%c", getID(i+1), current->proba, *getID(current->node));
+            current = current->next;
+        }
+    }
+
+}
 
 

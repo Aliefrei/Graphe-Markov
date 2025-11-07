@@ -12,5 +12,7 @@ int main() {
 
   is_markov(graphe);
 
+  draw_graph(graphe);
+
   return 0;
 }
