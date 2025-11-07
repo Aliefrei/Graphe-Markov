@@ -1,12 +1,8 @@
-
-//
-// Created by alilo on 20/10/2025.
-//
 #include "part1.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-// --- CELLULE ---
+// Cellule
 t_cell* create_cell(int node, float proba) {
     t_cell *new = (t_cell*)malloc(sizeof(t_cell));
     new->node = node;
@@ -15,7 +11,7 @@ t_cell* create_cell(int node, float proba) {
     return new;
 }
 
-// --- LISTE CHAÎNÉE ---
+// Liste chainée
 t_list* create_empty_list() {
     t_list *newliste = (t_list*)malloc(sizeof(t_list));
     newliste->head = NULL;
@@ -37,7 +33,7 @@ void display_list(t_list* L) {
     printf("\n");
 }
 
-// --- LISTE D'ADJACENCE ---
+// Liste d'adjacence
 t_list_adj* create_list_adj(int taille) {
     t_list_adj *l_adj = (t_list_adj*)malloc(sizeof(t_list_adj));
     l_adj->taille = taille;
@@ -57,7 +53,7 @@ void display_list_adj(t_list_adj* L) {
     }
 }
 
-// --- LECTURE DU GRAPHE ---
+// Lecture du graphe
 t_list_adj* readGraph(const char *filename) {
     FILE *file = fopen(filename, "rt");
     int nbvert, depart, arrivee;
@@ -85,9 +81,22 @@ t_list_adj* readGraph(const char *filename) {
 
 
 
-
-
-
+void is_markov(t_list_adj* list) {
+    for (int i = 0; i < list->taille; i++) {
+        float sum = 0;
+        t_cell * current = list->tab[i]->head;
+        while (current != NULL) {
+            sum += current->proba;
+            current = current->next;
+        }
+        if ((sum<0.99)||(sum>1)) {
+            printf("Le graphe n'est pas un graphe de Markov\nLa somme des probabilités du sommet %d est %.2f\n", list->tab[i]->head->node, sum);
+            return;
+        }
+    }
+    printf("Le graphe est un graphe de Markov");
+    return;
+}
 
 
 
