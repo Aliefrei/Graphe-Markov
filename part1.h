@@ -7,8 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
+//---------------------------------
 // Structures
+//---------------------------------
 typedef struct s_cell {
     int node; //sommet d'arrivée
     float proba;
@@ -25,8 +26,9 @@ typedef struct list_adj {
     t_list** tab ; // tableau dynamique
     }t_list_adj;
 
-
+//---------------------------------
 // Prototype des fonctions
+//---------------------------------
 
 // fonction pour créer une « cellule »
 t_cell* create_cell(int node, float proba);
@@ -36,23 +38,26 @@ t_list* create_empty_list();
 
 // fonction pour ajouter une cellule à une liste
 void add_cell(t_list* list, int node, float proba);
-// fonction pour afficher une liste
 
+// fonction pour afficher une liste
 void display_list(t_list* L);
 
-// fonction pour créer une liste d’adjacence ‘vide’ à partir d’une taille donnée
+// fonction pour créer une liste d’adjacence ‘vide’ à partir d’une taille donnée en paramètre
 t_list_adj* create_list_adj(int taille);
 
-// fonction pour aƯicher une liste d’adjacence
+// fonction pour afficher une liste d’adjacence
 void display_list_adj(t_list_adj* L);
 
-
+// Permet d'importer un graph depuis un fichier texte
 t_list_adj* readGraph(const char *filename);
 
-// Détermine si un graphe est un graphe de Markov et écrit le résultat
+// Renvoie une série de lettres correspondant à l'entier entré en paramètre (1->A, 26->Z, 27->AA...) | (Fonction fournie).
+static char *getID(int i);
+
+// Détermine si un graphe est un graphe de Markov et affiche le résultat
 void is_markov(t_list_adj* list);
 
-// Écrit dans dessin_graph.txt les données nécessaires au dessin du graph de Markov
+// Écrit dans dessin_graph.txt les données nécessaires au dessin du graph de Markov via Mermaid
 void draw_graph(t_list_adj* list);
 
 #endif //PART1_H
