@@ -37,6 +37,9 @@ typedef struct s_pile{
   t_tarjan_vertex** tab;
 }t_pile;
 
+void push(t_pile* pile, t_tarjan_vertex* vertex);
+
+
 
 
 

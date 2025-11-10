@@ -16,3 +16,10 @@ tab_all_vertex load_tab(t_list_adj graph){
     }
     return mytab_vertex;
    } 
+
+   void push(t_pile* pile, t_tarjan_vertex* vertex)
+    {
+         pile->tab[pile->taille] = vertex;
+         pile->taille++;
+    }
+    
