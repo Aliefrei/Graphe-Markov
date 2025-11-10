@@ -163,7 +163,7 @@ static char *getID(int i) {
     return buffer;
 }
 
-
+/*
 // Écrit dans dessin_graph.txt les données nécessaires au dessin du graph de Markov via Mermaid
 void draw_graph(t_list_adj* list) {
     FILE *p_texte;
@@ -184,5 +184,5 @@ void draw_graph(t_list_adj* list) {
         }
     }
 }
-
+*/
 
