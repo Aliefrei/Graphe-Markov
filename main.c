@@ -6,7 +6,7 @@
 #include "part1.h"
 
 int main() {
-  t_list_adj* graphe = readGraph("/exemple1.txt");
+  t_list_adj* graphe = readGraph("exemple1.txt");
 
   display_list_adj(graphe);
   is_markov(graphe);
