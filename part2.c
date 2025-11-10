@@ -15,10 +15,4 @@ tab_all_vertex load_tab(t_list_adj graph){
       mytab_vertex.vertex[i].booleen=0;
     }
     return mytab_vertex;
-   }
-
-
-
-
-
-  }
+   } 
