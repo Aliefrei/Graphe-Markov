@@ -18,12 +18,12 @@ typedef struct {
 
 typedef struct s_class{
   char *nom_class;
-  t_tarjan_vertex *vertex;
+  t_tarjan_vertex *nb_vertex;
 }t_class;
 
 
 //FONCTIONS
-
+tab_all_vertex load_tab(t_list_adj);
 
 
 
