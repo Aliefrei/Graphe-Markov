@@ -4,7 +4,7 @@
 #include "part1.h"
 #include "part2.h"
 
-tab_all_vertex load_tab(t_list_adj graph){
+tab_all_vertex tab_all_vertex_create(t_list_adj graph){
     tab_all_vertex mytab_vertex;
     mytab_vertex.taille = graph.taille;
     mytab_vertex.vertex = malloc(sizeof(t_tarjan_vertex) * mytab_vertex.taille);
@@ -17,9 +17,10 @@ tab_all_vertex load_tab(t_list_adj graph){
     return mytab_vertex;
    } 
 
-   void push(t_pile* pile, t_tarjan_vertex* vertex)
-    {
-         pile->tab[pile->taille] = vertex;
-         pile->taille++;
-    }
+void push(t_pile* pile, t_tarjan_vertex* vertex){
+
+  pile->tab[pile->taille] = vertex;
+  pile->taille++;
+  
+  }
     
