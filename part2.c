@@ -4,10 +4,12 @@
 #include "part1.h"
 #include "part2.h"
 
+//initialise tab vertex avec n -1 -1 0
 tab_all_vertex tab_all_vertex_create(t_list_adj graph){
     tab_all_vertex mytab_vertex;
     mytab_vertex.taille = graph.taille;
     mytab_vertex.vertex = malloc(sizeof(t_tarjan_vertex) * mytab_vertex.taille);
+
     for(int i = 0; i < mytab_vertex.taille; i++){
       mytab_vertex.vertex[i].id=i+1;
       mytab_vertex.vertex[i].num_tmp=-1;
@@ -15,12 +17,11 @@ tab_all_vertex tab_all_vertex_create(t_list_adj graph){
       mytab_vertex.vertex[i].booleen=0;
     }
     return mytab_vertex;
-   } 
+}
 
-void push(t_pile* pile, t_tarjan_vertex* vertex){
-
-  pile->tab[pile->taille] = vertex;
-  pile->taille++;
-  
-  }
+void push(t_pile* pile, t_tarjan_vertex* vertex)
+{
+     pile->tab[pile->taille] = vertex;
+     pile->taille++;
+}
     
