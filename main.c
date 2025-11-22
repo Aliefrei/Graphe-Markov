@@ -7,11 +7,12 @@
 #include "part2.h"
 
 int main() {
-  t_list_adj* graphe = readGraph("C:/Users/tsunt/Desktop/Graphe-Markov/exemple_valid_step3.txt");
+  t_list_adj* graphe = readGraph("exemple_valid_step3.txt");
 
   display_list_adj(graphe);
   is_markov(graphe);
   draw_graph(graphe);
+
 
   t_list_class* partition_test = tarjan(graphe);
   display_partition(partition_test);

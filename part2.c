@@ -4,6 +4,9 @@
 #include "part1.h"
 #include "part2.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "hasse.h"
 
 //initialise tab vertex avec n -1 -1 0
 tab_all_vertex tab_all_vertex_create(t_list_adj graph){
@@ -172,4 +175,168 @@ void free_partition(t_list_class* partition)
     }
     free(partition->tab);
     free(partition);
+}
+
+/* Retourne un tableau d'entiers (taille n_vertices) : v2c[i] = index de classe (0..C-1) */
+int *vertex_to_class(t_list_class *partition, int n_vertices)
+{
+    int *v2c = malloc(sizeof(int) * n_vertices);
+    if(!v2c){ perror("malloc"); exit(EXIT_FAILURE); }
+    for(int i=0;i<n_vertices;i++) v2c[i] = -1;
+
+    for(int c = 0; c < partition->taille; ++c){
+        t_class *cl = partition->tab[c];
+        for(int j=0;j<cl->size;++j){
+            int vid = cl->nb_vertex[j].id; /* 1-based */
+            if(vid < 1 || vid > n_vertices){
+                fprintf(stderr, "vertex_to_class: vertex id out of range %d\n", vid);
+                continue;
+            }
+            v2c[vid - 1] = c; /* store 0-based class index */
+        }
+    }
+
+    /* sanity: warn if some vertex not assigned */
+    for(int i=0;i<n_vertices;++i){
+        if(v2c[i] == -1){
+            fprintf(stderr, "Warning: vertex %d has no class assigned\n", i+1);
+        }
+    }
+    return v2c;
+}
+
+/* ---------------------- build hasse links ---------------------- */
+/* construit et renvoie un t_link_array compatible avec hasse.c
+   (allocation inside : links pointer alloué ; links.log_size = nombres d'arcs)
+*/
+t_hasse_link_array build_hasse_links(t_list_adj *graph, t_list_class *partition)
+{
+    int n = graph->taille;
+    int C = partition->taille;
+    t_hasse_link_array h;
+    h.links = NULL;
+    h.log_size = 0;
+
+    if(C == 0){
+        return h;
+    }
+
+    int *v2c = vertex_to_class(partition, n);
+
+    /* matrice CxC pour éviter doublons */
+    char *mat = calloc(C * C, 1);
+    if(!mat){ perror("calloc"); exit(EXIT_FAILURE); }
+
+    /* temporaire dynamique pour accumuler liens avant de fixer h.links */
+    int cap = 16;
+    t_link *temp = malloc(sizeof(t_link) * cap);
+    if(!temp){ perror("malloc"); exit(EXIT_FAILURE); }
+    int cnt = 0;
+
+    for(int i=0;i<n;++i){
+        int ci = v2c[i];
+        if(ci < 0) continue; /* sommet sans classe ? (warning déjà émis) */
+        t_cell *cur = graph->tab[i]->head;
+        while(cur){
+            int j = cur->node; /* 1-based */
+            if(j >= 1 && j <= n){
+                int cj = v2c[j - 1];
+                if(cj >= 0 && ci != cj){
+                    int idx = ci * C + cj;
+                    if(!mat[idx]){
+                        mat[idx] = 1;
+                        if(cnt >= cap){
+                            cap *= 2;
+                            temp = realloc(temp, sizeof(t_link) * cap);
+                            if(!temp){ perror("realloc"); exit(EXIT_FAILURE); }
+                        }
+                        temp[cnt].from = ci;
+                        temp[cnt].to   = cj;
+                        cnt++;
+                    }
+                }
+            }
+            cur = cur->next;
+        }
+    }
+
+    /* finaliser t_link_array (compatible hasse.c) */
+    if(cnt > 0){
+        h.links = malloc(sizeof(t_link) * cnt);
+        if(!h.links){ perror("malloc"); exit(EXIT_FAILURE); }
+        memcpy(h.links, temp, sizeof(t_link) * cnt);
+        h.log_size = cnt;
+    } else {
+        h.links = NULL;
+        h.log_size = 0;
+    }
+
+    free(temp);
+    free(mat);
+    free(v2c);
+    return h;
+}
+
+/* ---------------------- print Mermaid ---------------------- */
+void print_hasse_mermaid(t_list_class *partition, t_hasse_link_array *links)
+{
+    printf("\n```mermaid\n");
+    printf("graph TD\n");
+    /* nodes */
+    for(int c = 0; c < partition->taille; ++c){
+        t_class *cl = partition->tab[c];
+        printf("  C%d[\"{", c+1);
+        for(int j=0;j<cl->size;++j){
+            printf("%d", cl->nb_vertex[j].id);
+            if(j+1 < cl->size) printf(",");
+        }
+        printf("}\"]\n");
+    }
+    /* edges */
+    for(int e = 0; links && e < links->log_size; ++e){
+        printf("  C%d --> C%d\n", links->links[e].from + 1, links->links[e].to + 1);
+    }
+    printf("```\n");
+}
+
+//ETAPE 3
+
+void print_class_characteristics(t_list_class *partition, t_hasse_link_array *links)
+{
+    int C = partition->taille;
+    int *outdeg = calloc(C, sizeof(int));
+    if(links){
+        for(int e=0;e<links->log_size;++e){
+            int u = links->links[e].from;
+            if(u>=0 && u<C) outdeg[u]++;
+        }
+    }
+
+    int persistent_count = 0;
+    for(int c=0;c<C;++c){
+        if(outdeg[c] == 0){
+            printf("Classe %s (C%d) : persistante (pas de flèche sortante)\n",
+                   partition->tab[c]->nom_class ? partition->tab[c]->nom_class : "", c+1);
+            persistent_count++;
+            if(partition->tab[c]->size == 1){
+                printf("  -> état %d est absorbant (classe de taille 1).\n", partition->tab[c]->nb_vertex[0].id);
+            }
+        } else {
+            printf("Classe %s (C%d) : transitoire (outdeg=%d)\n",
+                   partition->tab[c]->nom_class ? partition->tab[c]->nom_class : "", c+1, outdeg[c]);
+        }
+    }
+    if(C == 1) printf("Graphe irréductible (une seule classe)\n");
+    else printf("Graphe non irréductible\n");
+
+    free(outdeg);
+}
+
+/* ---------------------- free helper ---------------------- */
+void free_hasse_links(t_hasse_link_array *links)
+{
+    if(!links) return;
+    if(links->links) free(links->links);
+    links->links = NULL;
+    links->log_size = 0;
 }
