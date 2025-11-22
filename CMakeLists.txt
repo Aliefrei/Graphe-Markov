@@ -7,4 +7,6 @@ add_executable(main
         main.c
         part1.c
         part1.h
+        part2.c
+        part2.h
 )

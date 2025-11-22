@@ -11,7 +11,7 @@ typedef struct s_tarjan_vertex{
   int num_tmp;
   int num_vertex;
   int booleen;
-  } t_tarjan_vertex;
+}t_tarjan_vertex;
 
 typedef struct {
   int taille;
