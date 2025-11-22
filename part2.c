@@ -144,22 +144,11 @@ t_list_class* tarjan(t_list_adj* graph)
     return partition;
 }
 
-// Fonction de comparaison pour qsort
-int compare_vertex_id(const void* a, const void* b) {
-    t_tarjan_vertex* va = (t_tarjan_vertex*)a;
-    t_tarjan_vertex* vb = (t_tarjan_vertex*)b;
-    return va->id - vb->id;
-}
-
 // Fonction pour afficher les composantes fortement connexes
 void display_partition(t_list_class* partition)
 {
     printf("\nComposantes fortement connexes trouvées : %d\n", partition->taille);
     for (int i = 0; i < partition->taille; i++) {
-        // Trier les sommets par ID croissant pour un affichage cohérent
-        qsort(partition->tab[i]->nb_vertex, partition->tab[i]->size,
-              sizeof(t_tarjan_vertex), compare_vertex_id);
-
         printf("Composante %s: {", partition->tab[i]->nom_class);
         for (int j = 0; j < partition->tab[i]->size; j++) {
             printf("%d", partition->tab[i]->nb_vertex[j].id);
