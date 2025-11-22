@@ -137,7 +137,7 @@ void is_markov(t_list_adj* list) {
             return;
         }
     }
-    printf("Le graphe est un graphe de Markov");
+    printf("Le graphe est un graphe de Markov\n");
     return;
 }
 
