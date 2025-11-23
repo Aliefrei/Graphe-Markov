@@ -150,7 +150,7 @@ t_list_class* tarjan(t_list_adj* graph)
 // Fonction pour afficher les composantes fortement connexes
 void display_partition(t_list_class* partition)
 {
-    printf("\nComposantes fortement connexes trouvées : %d\n", partition->taille);
+    printf("\nComposantes fortement connexes trouvees : %d\n", partition->taille);
     for (int i = 0; i < partition->taille; i++) {
         printf("Composante %s: {", partition->tab[i]->nom_class);
         for (int j = 0; j < partition->tab[i]->size; j++) {
@@ -315,19 +315,19 @@ void print_class_characteristics(t_list_class *partition, t_hasse_link_array *li
     int persistent_count = 0;
     for(int c=0;c<C;++c){
         if(outdeg[c] == 0){
-            printf("Classe %s (C%d) : persistante (pas de flèche sortante)\n",
+            printf("Classe %s (C%d) : persistante (pas de fleche sortante)\n",
                    partition->tab[c]->nom_class ? partition->tab[c]->nom_class : "", c+1);
             persistent_count++;
             if(partition->tab[c]->size == 1){
-                printf("  -> état %d est absorbant (classe de taille 1).\n", partition->tab[c]->nb_vertex[0].id);
+                printf("  -> etat %d est absorbant (classe de taille 1).\n", partition->tab[c]->nb_vertex[0].id);
             }
         } else {
             printf("Classe %s (C%d) : transitoire (outdeg=%d)\n",
                    partition->tab[c]->nom_class ? partition->tab[c]->nom_class : "", c+1, outdeg[c]);
         }
     }
-    if(C == 1) printf("Graphe irréductible (une seule classe)\n");
-    else printf("Graphe non irréductible\n");
+    if(C == 1) printf("Graphe irreductible (une seule classe)\n");
+    else printf("Graphe non irreductible\n");
 
     free(outdeg);
 }

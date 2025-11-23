@@ -133,7 +133,7 @@ void is_markov(t_list_adj* list) {
             current = current->next;
         }
         if ((sum<0.99)||(sum>1)) {
-            printf("Le graphe n'est pas un graphe de Markov\nLa somme des probabilités du sommet %d est %.2f\n", list->tab[i]->head->node, sum);
+            printf("Le graphe n'est pas un graphe de Markov\nLa somme des probabilites du sommet %d est %.2f\n", list->tab[i]->head->node, sum);
             return;
         }
     }

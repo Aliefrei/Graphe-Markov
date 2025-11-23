@@ -17,8 +17,22 @@ int main() {
   t_list_class* partition_test = tarjan(graphe);
   display_partition(partition_test);
 
+
+/* construire les liens (sans redondance initiale) */
+t_hasse_link_array links = build_hasse_links(graphe, partition_test);
+
+/* supprimer transitive links (réduction de Hasse) - utilise ton hasse.c */
+removeTransitiveLinks(&links);
+
+/* afficher Mermaid et caractéristiques */
+print_hasse_mermaid(partition_test, &links);
+print_class_characteristics(partition_test, &links);
+
+/* cleanup */
   free_partition(partition_test);
   free(graphe);
+
+  free_hasse_links(&links);
 
   return 0;
 }

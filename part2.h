@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "part1.h"
+#include "hasse.h"
 
 typedef struct s_tarjan_vertex{
   int id;
@@ -39,9 +40,6 @@ typedef struct s_pile{
 }t_pile;
 
 //Etape2 
-typedef struct { 
-  int from, to;
- } t_link;
 typedef struct {
   t_link *a;
   int size, cap;

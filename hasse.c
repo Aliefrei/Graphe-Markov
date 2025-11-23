@@ -4,6 +4,7 @@
 
 #include <malloc.h>
 #include "hasse.h"
+#include "part2.h"
 
 void removeTransitiveLinks(t_hasse_link_array *p_link_array)
 {
