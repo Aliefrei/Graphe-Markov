@@ -21,7 +21,7 @@ int main() {
 /* construire les liens (sans redondance initiale) */
 t_hasse_link_array links = build_hasse_links(graphe, partition_test);
 
-/* supprimer transitive links (réduction de Hasse) - utilise ton hasse.c */
+/* supprimer transitive links (réduction de Hasse)  */
 removeTransitiveLinks(&links);
 
 /* afficher Mermaid et caractéristiques */

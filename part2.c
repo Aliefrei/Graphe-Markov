@@ -205,10 +205,8 @@ int *vertex_to_class(t_list_class *partition, int n_vertices)
     return v2c;
 }
 
-/* ---------------------- build hasse links ---------------------- */
-/* construit et renvoie un t_link_array compatible avec hasse.c
-   (allocation inside : links pointer alloué ; links.log_size = nombres d'arcs)
-*/
+// build hasse links
+
 t_hasse_link_array build_hasse_links(t_list_adj *graph, t_list_class *partition)
 {
     int n = graph->taille;
