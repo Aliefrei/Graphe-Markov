@@ -163,11 +163,11 @@ static char *getID(int i) {
     return buffer;
 }
 
-/*
+
 // Écrit dans dessin_graph.txt les données nécessaires au dessin du graph de Markov via Mermaid
 void draw_graph(t_list_adj* list) {
     FILE *p_texte;
-    p_texte = fopen("dessin_graph.txt", "w");   // ouverture en mode écriture
+    p_texte = fopen("C:/Users/alilo/CLionProjects/Graphe-Markov/dessin_graph.txt", "w");   // ouverture en mode écriture
     fprintf(p_texte, "---\nconfig:\n   layout: elk\n   theme: neo\n   look: neo\n---\n\nflowchart LR\n");
 
     // parcourt les éléments de la liste d'adjacence
@@ -184,5 +184,5 @@ void draw_graph(t_list_adj* list) {
         }
     }
 }
-*/
+
 
