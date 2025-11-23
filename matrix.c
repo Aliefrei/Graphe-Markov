@@ -136,11 +136,3 @@ t_matrix subMatrix(t_matrix matrix, t_list_class* partition, int compo_index) {
     free(indices);
     return sub;
 }
-
-// vide ou libère la mémoire d'une matrice
-void free_matrix(t_matrix matrix) {
-    for (int i = 0; i < matrix.nb_lignes; i++) {
-        free(matrix.donnees[i]);
-    }
-    free(matrix.donnees);
-}
