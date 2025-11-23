@@ -30,4 +30,9 @@ float difference(t_matrix M, t_matrix N);
 void affichage_matrix(t_matrix M);
 
 
+
+
+
+t_matrix subMatrix(t_matrix matrix, t_list_class* partition, int compo_index);
+
 #endif //MATRIX_H

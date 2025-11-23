@@ -16,3 +16,6 @@ typedef struct {
 void removeTransitiveLinks(t_hasse_link_array *p_link_array);
 
 #endif /* HASSE_H */
+
+
+
