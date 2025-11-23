@@ -5,9 +5,10 @@
 #include <stdlib.h>
 #include "part1.h"
 #include "part2.h"
+#include "hasse.h"
 
 int main() {
-  t_list_adj* graphe = readGraph("exemple_valid_step3.txt");
+  t_list_adj* graphe = readGraph("C:/Users/tsunt/Desktop/Graphe-Markov/exemple_valid_step3.txt");
 
   display_list_adj(graphe);
   is_markov(graphe);
@@ -18,20 +19,19 @@ int main() {
   display_partition(partition_test);
 
 
-/* construire les liens (sans redondance initiale) */
-t_hasse_link_array links = build_hasse_links(graphe, partition_test);
+  /* construire les liens (sans redondance initiale) */
+  t_hasse_link_array links = build_hasse_links(graphe, partition_test);
 
-/* supprimer transitive links (réduction de Hasse)  */
-removeTransitiveLinks(&links);
+  /* supprimer transitive links (réduction de Hasse)  */
+  removeTransitiveLinks(&links);
 
-/* afficher Mermaid et caractéristiques */
-print_hasse_mermaid(partition_test, &links);
-print_class_characteristics(partition_test, &links);
+  /* afficher Mermaid et caractéristiques */
+  print_hasse_mermaid(partition_test, &links);
+  print_class_characteristics(partition_test, &links);
 
-/* cleanup */
+  //Libérer mémoire
   free_partition(partition_test);
   free(graphe);
-
   free_hasse_links(&links);
 
   return 0;

@@ -4,8 +4,7 @@
 
 #ifndef PART2_H
 #define PART2_H
-#include <stdio.h>
-#include <stdlib.h>
+
 #include "part1.h"
 #include "hasse.h"
 

@@ -1,12 +1,14 @@
 //
 // Created by alilo on 10/11/2025.
 //
-#include "part1.h"
-#include "part2.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "part1.h"
+#include "part2.h"
 #include "hasse.h"
+
 
 //initialise tab vertex avec n -1 -1 0
 tab_all_vertex tab_all_vertex_create(t_list_adj graph){
@@ -41,11 +43,13 @@ int min(int a, int b) {
     return (a < b) ? a : b;
 }
 
+
+
 // Fonction parcours selon l'algorithme de Tarjan
 void parcours(t_list_adj* graph, tab_all_vertex* all_vertex, t_pile* pile,
               int* p_num, t_list_class* partition, int sommet_id)
 {
-    // Récupérer le vertex correspondant (sommet_id est en base 1, tableau en base 0)
+    // Récupérer le vertex correspondant au sommet
     t_tarjan_vertex* vertex = &(all_vertex->vertex[sommet_id - 1]);
 
     // Initialiser num et num_tmp avec le numéro d'ordre
@@ -55,18 +59,18 @@ void parcours(t_list_adj* graph, tab_all_vertex* all_vertex, t_pile* pile,
 
     // Empiler le sommet
     push(pile, vertex);
-    vertex->booleen = 1; // Marquer comme étant dans la pile
+    vertex->booleen = 1; // Marquer comme étant dans pile
 
-    // Parcourir tous les successeurs du sommet
+    // Parcourir tous les successeurs du sommet : "pour chaque w successeur de v"
     t_cell* current = graph->tab[sommet_id - 1]->head;
-    while (current != NULL) {
-        int succ_id = current->node;
-        t_tarjan_vertex* succ = &(all_vertex->vertex[succ_id - 1]);
+    while (current != NULL) { //tant que current n'est pas dernier élém de liste chaînée "tab" de liste adjacence
+        int succ_id = current->node; //récup id successeur
+        t_tarjan_vertex* succ = &(all_vertex->vertex[succ_id - 1]); // pointeur succ récup adresse vertex
 
         if (succ->num_vertex == -1) {
             // Successeur non encore visité
             parcours(graph, all_vertex, pile, p_num, partition, succ_id);
-            vertex->num_tmp = min(vertex->num_tmp, succ->num_tmp);
+            vertex->num_tmp = min(vertex->num_tmp, succ->num_tmp); //num_tmp représente plus petit numéro de sommet que je peux atteindre depuis ma position
         }
         else if (succ->booleen == 1) {
             // Successeur dans la pile (arc retour)
@@ -77,7 +81,7 @@ void parcours(t_list_adj* graph, tab_all_vertex* all_vertex, t_pile* pile,
     }
 
     // Si c'est une racine de composante fortement connexe
-    if (vertex->num_tmp == vertex->num_vertex) {
+    if (vertex->num_tmp == vertex->num_vertex) { //retour sur lui même possible
         // Créer une nouvelle classe
         t_class* new_class = (t_class*)malloc(sizeof(t_class));
 
@@ -101,14 +105,13 @@ void parcours(t_list_adj* graph, tab_all_vertex* all_vertex, t_pile* pile,
         t_tarjan_vertex* w;
         do {
             w = pop(pile);
-            w->booleen = 0; // Retirer de la pile
+            w->booleen = 0; // Retirer de pile
             new_class->nb_vertex[idx] = *w;
             idx++;
         } while (w->id != sommet_id);
 
-        // Ajouter la classe à la partition
-        partition->tab = (t_class**)realloc(partition->tab,
-                                            (partition->taille + 1) * sizeof(t_class*));
+        // Ajouter la classe à la partition (liste de classe)
+        partition->tab = (t_class**)realloc(partition->tab, (partition->taille + 1) * sizeof(t_class*)); //realloc pour agrandir
         partition->tab[partition->taille] = new_class;
         partition->taille++;
     }
@@ -133,7 +136,7 @@ t_list_class* tarjan(t_list_adj* graph)
     // Compteur pour la numérotation
     int num = 0;
 
-    // Parcourir tous les sommets
+    // Parcourir tous les sommets + ajouter classes dans partition
     for (int i = 0; i < graph->taille; i++) {
         if (all_vertex.vertex[i].num_vertex == -1) {
             parcours(graph, &all_vertex, &pile, &num, partition, i + 1);
@@ -146,6 +149,8 @@ t_list_class* tarjan(t_list_adj* graph)
 
     return partition;
 }
+
+
 
 // Fonction pour afficher les composantes fortement connexes
 void display_partition(t_list_class* partition)
@@ -163,6 +168,7 @@ void display_partition(t_list_class* partition)
     }
 }
 
+
 // Fonction pour libérer la partition
 void free_partition(t_list_class* partition)
 {
@@ -176,6 +182,13 @@ void free_partition(t_list_class* partition)
     free(partition->tab);
     free(partition);
 }
+
+
+
+
+
+
+
 
 /* Retourne un tableau d'entiers (taille n_vertices) : v2c[i] = index de classe (0..C-1) */
 int *vertex_to_class(t_list_class *partition, int n_vertices)

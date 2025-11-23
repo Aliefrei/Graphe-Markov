@@ -9,4 +9,6 @@ add_executable(main
         part1.h
         part2.c
         part2.h
+        hasse.c
+        hasse.h
 )
