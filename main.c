@@ -53,25 +53,35 @@ int main() {
     else if (choix == 3) {
         printf("\n========== PARTIE 3 - ETAPE 1 ==========\n");
         //Affichage de la matrice
-        t_list_adj* graphe = readGraph("exemple_meteo.txt");
+        t_list_adj* graphe = readGraph("matrice27projet.txt");
         t_matrix matrix;
         matrix = create_matrix(graphe);
+        printf ("Matrice M : \n");
         affichage_matrix(matrix);
-        //Calcul de M^3
+        //Calcul de M^2
 
-        printf("La matrice M^3 :\n");
+        printf("\n\n---------------------------\n\n\n");
+        printf("La matrice M^2 :\n");
+        t_matrix M2;
+        M2 = matrix;
+        for(int i = 0; i < 1; i++) {
+            M2= produit_matrix(M2, matrix);
+        }
+        affichage_matrix(M2);
+        printf("\n\n---------------------------\n\n\n");
+        printf("La matrice M^10 :\n");
         t_matrix M3;
         M3 = matrix;
-        for(int i = 0; i < 2; i++) {
+        for(int i = 0; i < 9; i++) {
             M3= produit_matrix(M3, matrix);
         }
         affichage_matrix(M3);
-
-        //Calcul de M^7
-        printf("La matrice M^7\n");
+        printf("\n\n---------------------------\n\n\n");
+        //Calcul de M^50
+        printf("La matrice M^50\n");
         t_matrix M7;
         M7 = matrix;
-        for(int j = 0; j < 6 ;j++) {
+        for(int j = 0; j < 49 ;j++) {
             M7= produit_matrix(M7, matrix);
         }
         affichage_matrix(M7);
@@ -80,7 +90,7 @@ int main() {
 
         printf("Calcul de M^n pour laquelle diff(M^n,M^n-1) inferieure a 0.01 :\n Matrice initiale :\n");
         //Calcul de M^n pour laquelle diff(M^n,M^n-1) inférieure à 0.01
-        t_list_adj* graphe2 = readGraph("exemple_meteo.txt");
+        t_list_adj* graphe2 = readGraph("matrice27projet.txt");
         t_matrix M;
         M = create_matrix(graphe2);
 

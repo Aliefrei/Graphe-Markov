@@ -6,7 +6,7 @@
 #define MATRIX_H
 #include "part1.h"
 #include "part2.h"
-#define T_MAX 50
+#define T_MAX 100
 
 
 typedef struct {
@@ -34,5 +34,18 @@ void affichage_matrix(t_matrix M);
 
 
 t_matrix subMatrix(t_matrix matrix, t_list_class* partition, int compo_index);
+
+//PRJ PROBAS
+
+typedef struct {
+  float* valeurs;  // tableau de probabilités
+  int taille;      // nombre d'états
+} t_distribution;
+
+t_distribution create_distribution_etat(int nb_etats, int etat_initial);
+t_distribution produit_distribution_matrice(t_distribution dist, t_matrix M);
+void affichage_distribution(t_distribution dist, int numero_pas);
+
+
 
 #endif //MATRIX_H
