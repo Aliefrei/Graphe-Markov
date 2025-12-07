@@ -185,96 +185,138 @@ void free_partition(t_list_class* partition)
 
 
 
-
-
-
-
+// Etape 2
 
 /* Retourne un tableau d'entiers (taille n_vertices) : v2c[i] = index de classe (0..C-1) */
 int *vertex_to_class(t_list_class *partition, int n_vertices)
 {
+    /* Allocation du tableau résultat : un entier par sommet */
     int *v2c = malloc(sizeof(int) * n_vertices);
     if(!v2c){ perror("malloc"); exit(EXIT_FAILURE); }
+
+    /* Initialisation à -1 : aucun sommet n’est encore associé à une classe */
     for(int i=0;i<n_vertices;i++) v2c[i] = -1;
 
+    /* Parcourt toutes les classes trouvées par Tarjan */
     for(int c = 0; c < partition->taille; ++c){
         t_class *cl = partition->tab[c];
+
+        /* Parcourt tous les sommets appartenant à cette classe */
         for(int j=0;j<cl->size;++j){
+
+            /* Récupère l’ID réel du sommet (numérotation 1..n) */
             int vid = cl->nb_vertex[j].id; /* 1-based */
+
+            /* Vérification de sécurité : l'ID doit être dans [1, n_vertices] */
             if(vid < 1 || vid > n_vertices){
-                fprintf(stderr, "vertex_to_class: vertex id out of range %d\n", vid);
+                fprintf(stderr,
+                        "vertex_to_class: vertex id out of range %d\n", vid);
                 continue;
             }
+
+            /* Association :
+               comme vid est en base 1, on le met en (vid - 1)
+               et on stocke l’indice de classe c (base 0). */
             v2c[vid - 1] = c; /* store 0-based class index */
         }
     }
 
-    /* sanity: warn if some vertex not assigned */
+    /* Vérifie si tous les sommets ont bien été placés dans une classe */
     for(int i=0;i<n_vertices;++i){
         if(v2c[i] == -1){
-            fprintf(stderr, "Warning: vertex %d has no class assigned\n", i+1);
+            /* Cela ne devrait JAMAIS arriver après Tarjan.
+               Si oui : sommet ignoré ou partition incohérente. */
+            fprintf(stderr,"Warning: vertex %d has no class assigned\n", i+1);
         }
     }
+
     return v2c;
 }
 
 // build hasse links
+// Construit les liens entre classes (graphe des classes) avant réduction de Hasse.
+// Chaque lien représente l'existence d'au moins UNE arête allant d'une classe SCC vers une autre.
+// La fonction retourne une structure t_hasse_link_array contenant ces liens.
+// L'appelant devra ensuite appeler removeTransitiveLinks() pour obtenir le diagramme de Hasse réduit.
 
 t_hasse_link_array build_hasse_links(t_list_adj *graph, t_list_class *partition)
 {
-    int n = graph->taille;
-    int C = partition->taille;
-    t_hasse_link_array h;
+    int n = graph->taille;          // Nombre total de sommets du graphe.
+    int C = partition->taille;      // Nombre total de classes (SCC).
+    
+    t_hasse_link_array h;           // Structure résultat.
     h.links = NULL;
     h.log_size = 0;
 
+    // Si aucune classe, rien à faire.
     if(C == 0){
         return h;
     }
 
+    // v2c[i] = numéro de classe du sommet i (0-based).
+    // Permet de passer d’un sommet → classe en O(1)
     int *v2c = vertex_to_class(partition, n);
 
-    /* matrice CxC pour éviter doublons */
+    // Matrice C×C pour empêcher les doublons (mat[i*C + j] = 1 si lien déjà enregistré)
     char *mat = calloc(C * C, 1);
     if(!mat){ perror("calloc"); exit(EXIT_FAILURE); }
 
-    /* temporaire dynamique pour accumuler liens avant de fixer h.links */
+    // Tableau dynamique temporaire pour accumuler les liens (avant copie vers h.links).
+    // On part sur une capacité initiale de 16 et on double si besoin.
     int cap = 16;
     t_link *temp = malloc(sizeof(t_link) * cap);
     if(!temp){ perror("malloc"); exit(EXIT_FAILURE); }
-    int cnt = 0;
 
+    int cnt = 0; // Nombre de liens réellement trouvés
+
+    // Parcours des sommets du graphe
     for(int i=0;i<n;++i){
-        int ci = v2c[i];
-        if(ci < 0) continue; /* sommet sans classe ? (warning déjà émis) */
+        int ci = v2c[i];        // classe du sommet i
+        if(ci < 0) continue;    // sommet sans classe (ne devrait pas arriver)
+
+        // Parcours des successeurs du sommet i+1 (car graph->tab est 0-based)
         t_cell *cur = graph->tab[i]->head;
         while(cur){
-            int j = cur->node; /* 1-based */
+            int j = cur->node;  // identifiant du successeur (1-based)
+
+            // Vérification sécurité (j doit être un sommet valide)  
             if(j >= 1 && j <= n){
-                int cj = v2c[j - 1];
+                int cj = v2c[j - 1];  // classe du successeur
+
+                // On ne crée un lien qu’entre classes différentes
                 if(cj >= 0 && ci != cj){
-                    int idx = ci * C + cj;
+
+                    int idx = ci * C + cj; // position dans la matrice C×C
+
+                    // Si le lien n’a pas encore été enregistré
                     if(!mat[idx]){
-                        mat[idx] = 1;
+                        mat[idx] = 1; // marquer qu’on l’a déjà ajouté
+
+                        // Si le tableau temporaire est plein, on le redimensionne
                         if(cnt >= cap){
                             cap *= 2;
                             temp = realloc(temp, sizeof(t_link) * cap);
                             if(!temp){ perror("realloc"); exit(EXIT_FAILURE); }
                         }
+
+                        // Ajouter le lien (classe ci → classe cj)
                         temp[cnt].from = ci;
                         temp[cnt].to   = cj;
                         cnt++;
                     }
                 }
             }
-            cur = cur->next;
+            cur = cur->next; // passer au successeur suivant
         }
     }
 
-    /* finaliser t_link_array (compatible hasse.c) */
+    // Finalisation de la structure t_hasse_link_array
     if(cnt > 0){
+        // Allocation pile-poil à la bonne taille
         h.links = malloc(sizeof(t_link) * cnt);
         if(!h.links){ perror("malloc"); exit(EXIT_FAILURE); }
+
+        // Copie des liens trouvés
         memcpy(h.links, temp, sizeof(t_link) * cnt);
         h.log_size = cnt;
     } else {
@@ -282,9 +324,11 @@ t_hasse_link_array build_hasse_links(t_list_adj *graph, t_list_class *partition)
         h.log_size = 0;
     }
 
+    // Libérations
     free(temp);
     free(mat);
     free(v2c);
+
     return h;
 }
 

@@ -24,7 +24,7 @@ typedef struct s_list {
 typedef struct list_adj {
     int taille; // taille représente le nombre de sommets
     t_list** tab ; // tableau dynamique
-    }t_list_adj;
+}t_list_adj;
 
 //---------------------------------
 // Prototype des fonctions

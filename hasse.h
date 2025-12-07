@@ -2,7 +2,7 @@
 #define HASSE_H
 
 
-typedef struct {
+typedef struct {    
     int from;
     int to;
 } t_link;

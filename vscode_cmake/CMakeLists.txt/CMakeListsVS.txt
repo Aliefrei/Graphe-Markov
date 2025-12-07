@@ -9,4 +9,5 @@ set(PROJ_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 add_executable(part1
     ${PROJ_DIR}/main.c
     ${PROJ_DIR}/part1.c
+    
 )

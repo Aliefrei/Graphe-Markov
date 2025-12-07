@@ -25,7 +25,7 @@ int main() {
   t_hasse_link_array links = build_hasse_links(graphe, partition_test);
 
   /* supprimer transitive links (réduction de Hasse)  */
-  removeTransitiveLinks(&links);
+  removeTransitiveLinks(&links); 
 
   /* afficher Mermaid et caractéristiques */
   print_hasse_mermaid(partition_test, &links);
