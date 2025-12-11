@@ -97,3 +97,5 @@ t_matrix create_matrix(t_list_adj* graph){
     }
   }
 
+
+
